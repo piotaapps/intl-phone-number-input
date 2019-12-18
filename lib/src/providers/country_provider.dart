@@ -20,6 +20,8 @@ class CountryProvider {
       return countries.contains(country[PropertyName]);
     }).toList();
 
+    filteredList.sort((a, b) => a.dialCode.compareTo(b.dialCode));
+
     return filteredList.map((country) => Country.fromJson(country)).toList();
   }
 }

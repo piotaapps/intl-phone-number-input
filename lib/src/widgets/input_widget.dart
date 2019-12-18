@@ -30,6 +30,8 @@ class InternationalPhoneNumberInput extends StatefulWidget {
 
   final List<String> countries;
 
+  final Function(String) validator;
+
   const InternationalPhoneNumberInput({
     Key key,
     @required this.onInputChanged,
@@ -47,6 +49,7 @@ class InternationalPhoneNumberInput extends StatefulWidget {
     this.shouldValidate = true,
     this.formatInput = true,
     this.errorMessage = 'Invalid phone number',
+    this.validator
   }) : super(key: key);
 
   factory InternationalPhoneNumberInput.withCustomDecoration({
@@ -145,6 +148,7 @@ class _InternationalPhoneNumberInputState
         context: context, countries: widget.countries);
     setState(() {
       _countries = data;
+      _countries.sort((a,b) => a.dialCode.compareTo(b.dialCode));
       _selectedCountry = Utils.getInitialSelectedCountry(
           _countries, widget.initialCountry2LetterCode);
     });
@@ -265,7 +269,7 @@ class _InternationalPhoneNumberInputState
             ),
           ),
           Flexible(
-            child: TextField(
+            child: TextFormField(
               controller: _controller,
               focusNode: widget.focusNode,
               keyboardType: TextInputType.phone,
@@ -276,6 +280,7 @@ class _InternationalPhoneNumberInputState
                 _phoneNumberControllerListener();
               },
               decoration: _getInputDecoration(widget.inputDecoration),
+              validator: widget.validator,
             ),
           )
         ],

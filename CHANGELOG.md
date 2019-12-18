@@ -1,3 +1,6 @@
+## [0.1.4]
+  - added validators and sorted dial code
+
 ## [0.1.3]
   -  onInputChanged now returns a new PhoneNumber Model
   -  You can create a PhoneNumber object from PhoneNumber.getRegionInfoFromPhoneNumber(String phoneNumber, [String isoCode]); 

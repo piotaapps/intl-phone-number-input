@@ -30,12 +30,12 @@ class PhoneNumber {
   }
 
   static String getParsableNumber(String phoneNumber, String dialCode) {
-    return phoneNumber.replaceAll(RegExp('^([\\+?$dialCode\\s?]+)'), '');
+    RegExp regex = RegExp("^\\+?$dialCode");
+    return phoneNumber.replaceAll(regex, '');
   }
 
   String parseNumber() {
-    return this
-        .phoneNumber
-        .replaceAll(RegExp('^(\\+?${this.dialCode}\\s?+)'), '');
+    RegExp regex = RegExp("^\\+?${this.dialCode}");
+    return this.phoneNumber.replaceAll(regex, '');
   }
 }

@@ -30,13 +30,15 @@ class PhoneNumber {
   }
 
   static String getParsableNumber(String phoneNumber, String dialCode) {
-    RegExp regex = RegExp("^\\+?$dialCode");
+    String dc = dialCode.replaceAll('+', '');
+    RegExp regex = RegExp("^\\+?$dc");
     return phoneNumber.replaceAll(regex, '');
   }
 
   String parseNumber() {
     print("will parse ${this.phoneNumber} vs ${this.dialCode}");
-    RegExp regex = RegExp("^\\+?${this.dialCode}");
+    String dc = this.dialCode.replaceAll('+', '');
+    RegExp regex = RegExp("^\\+?$dc");
     return this.phoneNumber.replaceAll(regex, '');
   }
 }

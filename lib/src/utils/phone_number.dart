@@ -35,6 +35,7 @@ class PhoneNumber {
   }
 
   String parseNumber() {
+    print("will parse ${this.phoneNumber} vs ${this.dialCode}");
     RegExp regex = RegExp("^\\+?${this.dialCode}");
     return this.phoneNumber.replaceAll(regex, '');
   }

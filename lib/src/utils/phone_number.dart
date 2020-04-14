@@ -36,6 +36,6 @@ class PhoneNumber {
   String parseNumber() {
     return this
         .phoneNumber
-        .replaceAll(RegExp('^([\\+?${this.dialCode}\\s?]+)'), '');
+        .replaceAll(RegExp('^(\\+?${this.dialCode}\\s?+)'), '');
   }
 }

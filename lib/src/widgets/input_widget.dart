@@ -32,25 +32,25 @@ class InternationalPhoneNumberInput extends StatefulWidget {
 
   final Function(String)? validator;
 
-  const InternationalPhoneNumberInput({
-    Key? key,
-    required this.onInputChanged,
-    this.onInputValidated,
-    this.focusNode,
-    this.textFieldController,
-    this.onSubmit,
-    this.keyboardAction,
-    this.countries,
-    this.inputBorder,
-    this.inputDecoration,
-    this.initialCountry2LetterCode = 'NG',
-    this.hintText = '(800) 000-0001 23',
-    this.shouldParse = true,
-    this.shouldValidate = true,
-    this.formatInput = true,
-    this.errorMessage = 'Invalid phone number',
-    this.validator
-  }) : super(key: key);
+  const InternationalPhoneNumberInput(
+      {Key? key,
+      required this.onInputChanged,
+      this.onInputValidated,
+      this.focusNode,
+      this.textFieldController,
+      this.onSubmit,
+      this.keyboardAction,
+      this.countries,
+      this.inputBorder,
+      this.inputDecoration,
+      this.initialCountry2LetterCode = 'NG',
+      this.hintText = '(800) 000-0001 23',
+      this.shouldParse = true,
+      this.shouldValidate = true,
+      this.formatInput = true,
+      this.errorMessage = 'Invalid phone number',
+      this.validator})
+      : super(key: key);
 
   factory InternationalPhoneNumberInput.withCustomDecoration({
     required ValueChanged<PhoneNumber> onInputChanged,
@@ -134,7 +134,7 @@ class _InternationalPhoneNumberInputState
   List<TextInputFormatter> _buildInputFormatter() {
     List<TextInputFormatter> formatter = [
       LengthLimitingTextInputFormatter(20),
-      WhitelistingTextInputFormatter.digitsOnly,
+      FilteringTextInputFormatter.digitsOnly,
     ];
     if (widget.formatInput) {
       formatter.add(_kPhoneInputFormatter);
@@ -148,15 +148,14 @@ class _InternationalPhoneNumberInputState
         context: context, countries: widget.countries);
     setState(() {
       _countries = data;
-      _countries.sort((a,b) => a.dialCode!.compareTo(b.dialCode!));
+      _countries.sort((a, b) => a.dialCode!.compareTo(b.dialCode!));
       _selectedCountry = Utils.getInitialSelectedCountry(
           _countries, widget.initialCountry2LetterCode);
     });
   }
 
   Future<List<Country>> _getCountriesDataFromJsonFile(
-      {required BuildContext context,
-      required List<String>? countries}) async {
+      {required BuildContext context, required List<String>? countries}) async {
     var list = await CountryProvider.getCountriesDataFromJsonFile(
         context: context, countries: countries);
     return list;
@@ -209,10 +208,10 @@ class _InternationalPhoneNumberInputState
       String phoneNumber, String? iso) async {
     if (phoneNumber.isNotEmpty && iso != null) {
       try {
-        bool isValidPhoneNumber = await (PhoneNumberUtil.isValidPhoneNumber(
-            phoneNumber: phoneNumber, isoCode: iso) as FutureOr<bool>);
+        bool? isValidPhoneNumber = await PhoneNumberUtil.isValidPhoneNumber(
+            phoneNumber: phoneNumber, isoCode: iso);
 
-        if (isValidPhoneNumber) {
+        if (isValidPhoneNumber != null && isValidPhoneNumber == true) {
           return await PhoneNumberUtil.normalizePhoneNumber(
               phoneNumber: phoneNumber, isoCode: iso);
         }

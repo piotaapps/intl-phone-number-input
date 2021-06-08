@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class Country {
   final String? name;
   final String? countryCode;

@@ -1,15 +1,15 @@
 import 'package:libphonenumber/libphonenumber.dart';
 
 class PhoneNumber {
-  final String phoneNumber;
-  final String dialCode;
-  final String isoCode;
+  final String? phoneNumber;
+  final String? dialCode;
+  final String? isoCode;
 
   PhoneNumber({this.phoneNumber, this.dialCode, this.isoCode});
 
   @override
   String toString() {
-    return phoneNumber;
+    return phoneNumber!;
   }
 
   static Future<PhoneNumber> getRegionInfoFromPhoneNumber(
@@ -19,9 +19,9 @@ class PhoneNumber {
     RegionInfo regionInfo = await PhoneNumberUtil.getRegionInfo(
         phoneNumber: phoneNumber, isoCode: isoCode);
 
-    String internationalPhoneNumber =
+    String? internationalPhoneNumber =
         await PhoneNumberUtil.normalizePhoneNumber(
-            phoneNumber: phoneNumber, isoCode: regionInfo.isoCode);
+            phoneNumber: phoneNumber, isoCode: regionInfo.isoCode!);
 
     return PhoneNumber(
         phoneNumber: internationalPhoneNumber,
@@ -37,8 +37,8 @@ class PhoneNumber {
 
   String parseNumber() {
     print("will parse ${this.phoneNumber} vs ${this.dialCode}");
-    String dc = this.dialCode.replaceAll('+', '');
+    String dc = this.dialCode!.replaceAll('+', '');
     RegExp regex = RegExp("^\\+?$dc");
-    return this.phoneNumber.replaceAll(regex, '');
+    return this.phoneNumber!.replaceAll(regex, '');
   }
 }

@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 class Country {
-  final String name;
-  final String countryCode;
-  final String dialCode;
+  final String? name;
+  final String? countryCode;
+  final String? dialCode;
   final String flagUri;
 
   Country(
-      {@required this.name,
-      @required this.countryCode,
-      @required this.dialCode,
-      @required this.flagUri});
+      {required this.name,
+      required this.countryCode,
+      required this.dialCode,
+      required this.flagUri});
 
   factory Country.fromJson(Map<String, dynamic> data) {
     return Country(

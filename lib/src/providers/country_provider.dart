@@ -7,16 +7,16 @@ const String PropertyName = 'alpha_2_code';
 
 class CountryProvider {
   static Future<List<Country>> getCountriesDataFromJsonFile(
-      {@required BuildContext context,
-      @required List<String> countries}) async {
+      {required BuildContext context,
+      required List<String>? countries}) async {
     var list = await DefaultAssetBundle.of(context).loadString(
         'packages/intl_phone_number_input/src/models/countries.json');
-    List jsonList = jsonDecode(list);
+    List? jsonList = jsonDecode(list);
 
     if (countries == null || countries.isEmpty) {
-      return jsonList.map((country) => Country.fromJson(country)).toList();
+      return jsonList!.map((country) => Country.fromJson(country)).toList();
     }
-    List filteredList = jsonList.where((country) {
+    List filteredList = jsonList!.where((country) {
       return countries.contains(country[PropertyName]);
     }).toList();
 

@@ -9,11 +9,11 @@ import 'package:libphonenumber/libphonenumber.dart';
 
 class InternationalPhoneNumberInput extends StatefulWidget {
   final ValueChanged<PhoneNumber> onInputChanged;
-  final ValueChanged<bool> onInputValidated;
+  final ValueChanged<bool>? onInputValidated;
 
-  final VoidCallback onSubmit;
-  final TextEditingController textFieldController;
-  final TextInputAction keyboardAction;
+  final VoidCallback? onSubmit;
+  final TextEditingController? textFieldController;
+  final TextInputAction? keyboardAction;
 
   final String initialCountry2LetterCode;
   final String hintText;
@@ -23,18 +23,18 @@ class InternationalPhoneNumberInput extends StatefulWidget {
   final bool shouldParse;
   final bool shouldValidate;
 
-  final InputBorder inputBorder;
-  final InputDecoration inputDecoration;
+  final InputBorder? inputBorder;
+  final InputDecoration? inputDecoration;
 
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
-  final List<String> countries;
+  final List<String>? countries;
 
-  final Function(String) validator;
+  final Function(String)? validator;
 
   const InternationalPhoneNumberInput({
-    Key key,
-    @required this.onInputChanged,
+    Key? key,
+    required this.onInputChanged,
     this.onInputValidated,
     this.focusNode,
     this.textFieldController,
@@ -53,14 +53,14 @@ class InternationalPhoneNumberInput extends StatefulWidget {
   }) : super(key: key);
 
   factory InternationalPhoneNumberInput.withCustomDecoration({
-    @required ValueChanged<PhoneNumber> onInputChanged,
-    ValueChanged<bool> onInputValidated,
-    FocusNode focusNode,
-    TextEditingController textFieldController,
-    VoidCallback onSubmit,
-    TextInputAction keyboardAction,
-    List<String> countries,
-    @required InputDecoration inputDecoration,
+    required ValueChanged<PhoneNumber> onInputChanged,
+    ValueChanged<bool>? onInputValidated,
+    FocusNode? focusNode,
+    TextEditingController? textFieldController,
+    VoidCallback? onSubmit,
+    TextInputAction? keyboardAction,
+    List<String>? countries,
+    required InputDecoration inputDecoration,
     String initialCountry2LetterCode = 'NG',
     bool formatInput = true,
     bool shouldParse = true,
@@ -83,15 +83,15 @@ class InternationalPhoneNumberInput extends StatefulWidget {
   }
 
   factory InternationalPhoneNumberInput.withCustomBorder({
-    @required ValueChanged<PhoneNumber> onInputChanged,
-    @required ValueChanged<bool> onInputValidated,
-    FocusNode focusNode,
-    TextEditingController textFieldController,
-    VoidCallback onSubmit,
-    TextInputAction keyboardAction,
-    List<String> countries,
-    @required InputBorder inputBorder,
-    @required String hintText,
+    required ValueChanged<PhoneNumber> onInputChanged,
+    required ValueChanged<bool> onInputValidated,
+    FocusNode? focusNode,
+    TextEditingController? textFieldController,
+    VoidCallback? onSubmit,
+    TextInputAction? keyboardAction,
+    List<String>? countries,
+    required InputBorder inputBorder,
+    required String hintText,
     String initialCountry2LetterCode = 'NG',
     String errorMessage = 'Invalid phone number',
     bool formatInput = true,
@@ -127,9 +127,9 @@ class _InternationalPhoneNumberInputState
   bool _isNotValid = false;
 
   List<Country> _countries = [];
-  Country _selectedCountry;
+  Country? _selectedCountry;
 
-  TextEditingController _controller;
+  TextEditingController? _controller;
 
   List<TextInputFormatter> _buildInputFormatter() {
     List<TextInputFormatter> formatter = [
@@ -148,15 +148,15 @@ class _InternationalPhoneNumberInputState
         context: context, countries: widget.countries);
     setState(() {
       _countries = data;
-      _countries.sort((a,b) => a.dialCode.compareTo(b.dialCode));
+      _countries.sort((a,b) => a.dialCode!.compareTo(b.dialCode!));
       _selectedCountry = Utils.getInitialSelectedCountry(
           _countries, widget.initialCountry2LetterCode);
     });
   }
 
   Future<List<Country>> _getCountriesDataFromJsonFile(
-      {@required BuildContext context,
-      @required List<String> countries}) async {
+      {required BuildContext context,
+      required List<String>? countries}) async {
     var list = await CountryProvider.getCountriesDataFromJsonFile(
         context: context, countries: countries);
     return list;
@@ -165,7 +165,7 @@ class _InternationalPhoneNumberInputState
   void _phoneNumberControllerListener() {
     _isNotValid = false;
     String parsedPhoneNumberString =
-        _controller.text.replaceAll(RegExp(r'([\(\1\)\1\s\-])'), '');
+        _controller!.text.replaceAll(RegExp(r'([\(\1\)\1\s\-])'), '');
 
     if (widget.shouldParse) {
       getParsedPhoneNumber(
@@ -173,7 +173,7 @@ class _InternationalPhoneNumberInputState
           .then((phoneNumber) {
         if (phoneNumber == null) {
           if (widget.onInputValidated != null) {
-            widget.onInputValidated(false);
+            widget.onInputValidated!(false);
           }
           if (widget.shouldValidate) {
             setState(() {
@@ -186,7 +186,7 @@ class _InternationalPhoneNumberInputState
               isoCode: _selectedCountry?.countryCode,
               dialCode: _selectedCountry?.dialCode));
           if (widget.onInputValidated != null) {
-            widget.onInputValidated(true);
+            widget.onInputValidated!(true);
           }
           if (widget.shouldValidate) {
             setState(() {
@@ -197,7 +197,7 @@ class _InternationalPhoneNumberInputState
       });
     } else {
       String phoneNumber =
-          '${_selectedCountry.dialCode}$parsedPhoneNumberString';
+          '${_selectedCountry!.dialCode}$parsedPhoneNumberString';
       widget.onInputChanged(new PhoneNumber(
           phoneNumber: phoneNumber,
           isoCode: _selectedCountry?.countryCode,
@@ -205,12 +205,12 @@ class _InternationalPhoneNumberInputState
     }
   }
 
-  static Future<String> getParsedPhoneNumber(
-      String phoneNumber, String iso) async {
+  static Future<String?> getParsedPhoneNumber(
+      String phoneNumber, String? iso) async {
     if (phoneNumber.isNotEmpty && iso != null) {
       try {
-        bool isValidPhoneNumber = await PhoneNumberUtil.isValidPhoneNumber(
-            phoneNumber: phoneNumber, isoCode: iso);
+        bool isValidPhoneNumber = await (PhoneNumberUtil.isValidPhoneNumber(
+            phoneNumber: phoneNumber, isoCode: iso) as FutureOr<bool>);
 
         if (isValidPhoneNumber) {
           return await PhoneNumberUtil.normalizePhoneNumber(
@@ -224,14 +224,14 @@ class _InternationalPhoneNumberInputState
   }
 
   void _formatTextField() {
-    bool isFormatted = _controller.text.contains(RegExp(r'([\(\1\)\1\s\-])'));
-    bool isNotEmpty = _controller.text.isNotEmpty;
+    bool isFormatted = _controller!.text.contains(RegExp(r'([\(\1\)\1\s\-])'));
+    bool isNotEmpty = _controller!.text.isNotEmpty;
     if (!isFormatted && isNotEmpty && widget.formatInput) {
       TextEditingValue textEditingValue =
-          TextEditingValue(text: _controller.text);
+          TextEditingValue(text: _controller!.text);
       textEditingValue = _kPhoneInputFormatter.formatEditUpdate(
-          _controller.value, textEditingValue);
-      _controller.text = textEditingValue.text;
+          _controller!.value, textEditingValue);
+      _controller!.text = textEditingValue.text;
     }
   }
 
@@ -239,8 +239,8 @@ class _InternationalPhoneNumberInputState
   void initState() {
     Future.delayed(Duration.zero, () => _loadCountries(context));
     _controller = widget.textFieldController ?? TextEditingController();
-    _controller.addListener(_phoneNumberControllerListener);
-    _controller.addListener(_formatTextField);
+    _controller!.addListener(_phoneNumberControllerListener);
+    _controller!.addListener(_formatTextField);
     super.initState();
   }
 
@@ -280,7 +280,7 @@ class _InternationalPhoneNumberInputState
                 _phoneNumberControllerListener();
               },
               decoration: _getInputDecoration(widget.inputDecoration),
-              validator: widget.validator,
+              validator: widget.validator as String? Function(String?)?,
             ),
           )
         ],
@@ -288,7 +288,7 @@ class _InternationalPhoneNumberInputState
     );
   }
 
-  InputDecoration _getInputDecoration(InputDecoration decoration) {
+  InputDecoration _getInputDecoration(InputDecoration? decoration) {
     return decoration ??
         InputDecoration(
           border: widget.inputBorder ?? UnderlineInputBorder(),
@@ -313,7 +313,7 @@ class _InternationalPhoneNumberInputState
                   ),
                   SizedBox(width: 12.0),
                   Text(
-                    country.dialCode,
+                    country.dialCode!,
                   )
                 ],
               ),
